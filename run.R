@@ -17,6 +17,12 @@ parser$add_argument(
   required = TRUE
 )
 parser$add_argument(
+  "--data.h5ad",
+  dest = "data_path", type = "character",
+  help = "input data h5ad path",
+  required = TRUE
+)
+parser$add_argument(
   "--method_name",
   dest = "method_name", type = "character",
   help = "name of the method",
