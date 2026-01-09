@@ -1,11 +1,4 @@
-### cite_seq ###
-library(MultiAssayExperiment)
-library(SingleCellMultiModal)
-library(SingleCellExperiment)
-library(ExperimentHub)
-library(dplyr)
 library(Seurat)
-library(patchwork)
 
 run_seurat <- function(sce) {
   # save time usage ####

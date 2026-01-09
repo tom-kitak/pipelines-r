@@ -2,6 +2,7 @@
 
 library(argparse)
 library(jsonlite)
+library(zellkonverter)
 
 parser <- ArgumentParser(description = "Benchmarking entrypoint")
 
