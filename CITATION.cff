@@ -5,6 +5,12 @@ authors:
   - family-names: "Choudhury"
     given-names: "Atreya"
     orcid: "https://orcid.org/0009-0003-4975-0515"
-title: "methods-r"
+  - family-names: "Luo"
+    given-names: "Siyuan"
+title: "pipelines-r"
 version: 0.1.0
-url: "https://github.com/scrna-bench/methods-r"
+url: "https://github.com/scrna-bench/pipelines-r"
+references:
+  - type: article
+    title: "Benchmarking large-scale single-cell RNA-seq analysis"
+    doi: "10.1101/2025.10.28.681564"
