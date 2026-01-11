@@ -44,7 +44,7 @@ leiden_path <- file.path(args$output_dir, paste0(args$name, ".leiden.tsv"))
 louvain_path <- file.path(args$output_dir, paste0(args$name, ".louvain.tsv"))
 pca_path <- file.path(args$output_dir, paste0(args$name, ".pca.tsv"))
 
-sce <- readH5AD(args$data_path, use_hdf5 = TRUE, reader = "python")
+sce <- readH5AD(args$data_path, reader = "python")
 
 if (args$method_name == "seurat") {
   source(seurat_r_path)
