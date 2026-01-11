@@ -49,6 +49,9 @@ sce <- readH5AD(args$data_path, reader = "python")
 if (args$method_name == "seurat") {
   source(seurat_r_path)
   seurat_data <- run_seurat(sce)
+  seurat_data$time <- lapply(seurat_data$time, function(x) {
+    as.numeric(x, units = "secs")
+  })
   write_json(
     seurat_data$time, timings_path,
     auto_unbox = TRUE, pretty = TRUE
