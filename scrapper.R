@@ -98,6 +98,6 @@ run_scrapper <- function(sce, time) {
     cell_ids = colnames(filtered),
     time = time,
     leiden = leiden_clustering,
-    louvin = louvain_clustering
+    louvain = louvain_clustering
   ))
 }
