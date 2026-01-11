@@ -2,7 +2,7 @@ library(SingleCellExperiment)
 library(DelayedArray)
 library(scrapper)
 
-run_scrapper <- function(sce) {
+run_scrapper <- function(sce, time) {
   nthreads <- 1
   assay(sce) <- DelayedArray(assay(sce))
 
