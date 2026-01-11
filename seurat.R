@@ -8,7 +8,7 @@ run_seurat <- function(sce) {
     normalization = NA_real_,
     hvg = NA_real_,
     scaling = NA_real_,
-    PCA = NA_real_,
+    pca = NA_real_,
     t_sne = NA_real_,
     umap = NA_real_,
     louvain = NA_real_,

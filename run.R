@@ -57,12 +57,18 @@ if (args$method_name == "seurat") {
     auto_unbox = TRUE, pretty = TRUE
   )
   write.table(
-    data.frame(seurat_data$cell_ids, seurat_data$leiden), leiden_path,
+    data.frame(cell_ids = seurat_data$cell_ids, leiden = seurat_data$leiden),
+    leiden_path,
     sep = "\t", quote = F, row.names = F
   )
   write.table(
-    data.frame(seurat_data$cell_ids, seurat_data$louvain), louvain_path,
+    data.frame(cell_ids = seurat_data$cell_ids, louvain = seurat_data$louvain),
+    louvain_path,
     sep = "\t", quote = F, row.names = F
+  )
+  seurat_data$pca <- data.frame(
+    cell_ids = rownames(seurat_data$pca),
+    seurat_data$pca
   )
   write.table(
     seurat_data$pca, pca_path,
