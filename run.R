@@ -33,6 +33,12 @@ parser$add_argument(
 
 args <- parser$parse_args()
 
+cargs <- commandArgs(trailingOnly = FALSE)
+m <- grep("--file=", cargs)
+run_dir <- dirname(gsub("--file=", "", cargs[[m]]))
+
+seurat_r_path <- file.path(run_dir, "seurat.R")
+
 timings_path <- file.path(args$output_dir, paste0(args$name, ".timings.json"))
 leiden_path <- file.path(args$output_dir, paste0(args$name, ".leiden.tsv"))
 louvain_path <- file.path(args$output_dir, paste0(args$name, ".louvain.tsv"))
@@ -41,7 +47,7 @@ pca_path <- file.path(args$output_dir, paste0(args$name, ".pca.tsv"))
 sce <- readH5AD(args$data_path, use_hdf5 = TRUE, reader = "python")
 
 if (args$method_name == "seurat") {
-  source("seurat.R")
+  source(seurat_r_path)
   seurat_data <- run_seurat(sce)
   write_json(
     seurat_data$time, timings_path,
