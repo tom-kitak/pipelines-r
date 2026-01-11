@@ -61,6 +61,10 @@ if (args$method_name == "seurat") {
   osca_r_path <- file.path(run_dir, "OSCA.R")
   source(osca_r_path)
   output_data <- run_osca(sce, time)
+} else if (args$method_name == "scrapper") {
+  scrapper_r_path <- file.path(run_dir, "scrapper.R")
+  source(scrapper_r_path)
+  output_data <- run_scrapper(sce, time)
 }
 
 # write outputs to files
