@@ -1,20 +1,6 @@
 library(Seurat)
 
-run_seurat <- function(sce) {
-  # save time usage ####
-  time <- list(
-    find_mit_gene = NA_real_,
-    filter = NA_real_,
-    normalization = NA_real_,
-    hvg = NA_real_,
-    scaling = NA_real_,
-    pca = NA_real_,
-    t_sne = NA_real_,
-    umap = NA_real_,
-    louvain = NA_real_,
-    leiden = NA_real_
-  )
-
+run_seurat <- function(sce, time) {
   # data ####
   data <- as.Seurat(sce, counts = "counts", data = NULL, assay = NULL)
   DefaultAssay(data) <- "originalexp"
@@ -36,7 +22,6 @@ run_seurat <- function(sce) {
   time_elapsed <- end_time - start_time
   print(paste("Filter data. Time Elapsed:", time_elapsed))
   time$filter <- time_elapsed
-
 
   # normalization ####
   start_time <- Sys.time()
@@ -91,7 +76,6 @@ run_seurat <- function(sce) {
   time_elapsed <- end_time - start_time
   print(paste("UMAP. Time Elapsed:", time_elapsed))
   time$umap <- time_elapsed
-
 
   # louvain ####
   start_time <- Sys.time()

@@ -37,8 +37,6 @@ cargs <- commandArgs(trailingOnly = FALSE)
 m <- grep("--file=", cargs)
 run_dir <- dirname(gsub("--file=", "", cargs[[m]]))
 
-seurat_r_path <- file.path(run_dir, "seurat.R")
-
 timings_path <- file.path(args$output_dir, paste0(args$name, ".timings.json"))
 leiden_path <- file.path(args$output_dir, paste0(args$name, ".leiden.tsv"))
 louvain_path <- file.path(args$output_dir, paste0(args$name, ".louvain.tsv"))
@@ -46,32 +44,48 @@ pca_path <- file.path(args$output_dir, paste0(args$name, ".pca.tsv"))
 
 sce <- readH5AD(args$data_path, reader = "python")
 
+# time object to store time involved (in seconds) in each step
+time <- list(
+  find_mit_gene = NA_real_, filter = NA_real_, normalization = NA_real_,
+  hvg = NA_real_, scaling = NA_real_, pca = NA_real_,
+  t_sne = NA_real_, umap = NA_real_,
+  louvain = NA_real_, leiden = NA_real_
+)
+
+# source and run appropriate method
 if (args$method_name == "seurat") {
+  seurat_r_path <- file.path(run_dir, "seurat.R")
   source(seurat_r_path)
-  seurat_data <- run_seurat(sce)
-  seurat_data$time <- lapply(seurat_data$time, function(x) {
-    as.numeric(x, units = "secs")
-  })
-  write_json(
-    seurat_data$time, timings_path,
-    auto_unbox = TRUE, pretty = TRUE
-  )
-  write.table(
-    data.frame(cell_ids = seurat_data$cell_ids, leiden = seurat_data$leiden),
-    leiden_path,
-    sep = "\t", quote = F, row.names = F
-  )
-  write.table(
-    data.frame(cell_ids = seurat_data$cell_ids, louvain = seurat_data$louvain),
-    louvain_path,
-    sep = "\t", quote = F, row.names = F
-  )
-  seurat_data$pca <- data.frame(
-    cell_ids = rownames(seurat_data$pca),
-    seurat_data$pca
-  )
-  write.table(
-    seurat_data$pca, pca_path,
-    sep = "\t", quote = F, row.names = F
-  )
+  output_data <- run_seurat(sce, time)
+} else if (args$method_name == "osca") {
+  osca_r_path <- file.path(run_dir, "OSCA.R")
+  source(osca_r_path)
+  output_data <- run_osca(sce, time)
 }
+
+# write outputs to files
+output_data$time <- lapply(output_data$time, function(x) {
+  as.numeric(x, units = "secs")
+})
+write_json(
+  output_data$time, timings_path,
+  auto_unbox = TRUE, pretty = TRUE
+)
+write.table(
+  data.frame(cell_ids = output_data$cell_ids, leiden = output_data$leiden),
+  leiden_path,
+  sep = "\t", quote = F, row.names = F
+)
+write.table(
+  data.frame(cell_ids = output_data$cell_ids, louvain = output_data$louvain),
+  louvain_path,
+  sep = "\t", quote = F, row.names = F
+)
+output_data$pca <- data.frame(
+  cell_ids = rownames(output_data$pca),
+  output_data$pca
+)
+write.table(
+  output_data$pca, pca_path,
+  sep = "\t", quote = F, row.names = F
+)
