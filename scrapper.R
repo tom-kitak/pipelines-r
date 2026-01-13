@@ -36,8 +36,14 @@ run_scrapper <- function(sce, time) {
 
   # Identification of highly variable features (feature selection) ####
   start_time <- Sys.time()
-  gene.var <- modelGeneVariances(assay(filtered, "normalized"), num.threads = nthreads)
-  hvg.sce.var <- chooseHighlyVariableGenes(gene.var$statistics$residuals, top = 1000)
+  gene.var <- modelGeneVariances(
+    assay(filtered, "normalized"),
+    num.threads = nthreads
+  )
+  hvg.sce.var <- chooseHighlyVariableGenes(
+    gene.var$statistics$residuals,
+    top = 1000
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Identification of highly variable features. Time Elapsed:", time_elapsed))
@@ -45,7 +51,10 @@ run_scrapper <- function(sce, time) {
 
   # PCA ####
   start_time <- Sys.time()
-  pca <- runPca((assay(filtered, "normalized")[hvg.sce.var, ]), num.threads = nthreads, number = 50)
+  pca <- runPca(
+    (assay(filtered, "normalized")[hvg.sce.var, ]),
+    num.threads = nthreads, number = 50
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("PCA. Time Elapsed:", time_elapsed))
@@ -76,7 +85,10 @@ run_scrapper <- function(sce, time) {
   # louvain  ####
   start_time <- Sys.time()
   snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
-  clust.out <- clusterGraph(snn.graph, method = c("multilevel"), multilevel.resolution = 0.18)
+  clust.out <- clusterGraph(
+    snn.graph,
+    method = c("multilevel"), multilevel.resolution = 0.18
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Louvain clusterings. Time Elapsed:", time_elapsed))
@@ -86,7 +98,10 @@ run_scrapper <- function(sce, time) {
   # leiden ####
   start_time <- Sys.time()
   snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
-  clust.out <- clusterGraph(snn.graph, method = c("leiden"), leiden.resolution = 0.16)
+  clust.out <- clusterGraph(
+    snn.graph,
+    method = c("leiden"), leiden.resolution = 0.16
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Leiden clusterings. Time Elapsed:", time_elapsed))

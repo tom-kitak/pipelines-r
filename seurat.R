@@ -17,7 +17,10 @@ run_seurat <- function(sce, time) {
   cat(dim(data))
   start_time <- Sys.time()
   VlnPlot(data, features = c("nFeature_originalexp", "nCount_originalexp", "percent.mt"), ncol = 3)
-  data <- subset(data, subset = nFeature_originalexp > 200 & nFeature_originalexp < 6200 & percent.mt < 5 & nCount_originalexp < 60000)
+  data <- subset(
+    data,
+    subset = nFeature_originalexp > 200 & nFeature_originalexp < 6200 & percent.mt < 5 & nCount_originalexp < 60000
+  )
   end_time <- Sys.time()
   cat(dim(data))
   time_elapsed <- end_time - start_time
@@ -35,7 +38,7 @@ run_seurat <- function(sce, time) {
   # Identification of highly variable features (feature selection) ####
   start_time <- Sys.time()
   data <- FindVariableFeatures(data, selection.method = "vst", nfeatures = 1000)
-  #top10 <- head(VariableFeatures(data), 10)
+  # top10 <- head(VariableFeatures(data), 10)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Identification of highly variable features. Time Elapsed:", time_elapsed))
@@ -54,7 +57,10 @@ run_seurat <- function(sce, time) {
 
   # PCA ####
   start_time <- Sys.time()
-  data <- RunPCA(data, features = VariableFeatures(object = data), verbose = FALSE)
+  data <- RunPCA(
+    data,
+    features = VariableFeatures(object = data), verbose = FALSE
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("PCA. Time Elapsed:", time_elapsed))
@@ -81,7 +87,10 @@ run_seurat <- function(sce, time) {
   # louvain ####
   start_time <- Sys.time()
   data <- FindNeighbors(data, dims = 1:50, verbose = T)
-  data <- FindClusters(data, resolution = 0.1, algorithm = 1, cluster.name = "louvain")
+  data <- FindClusters(
+    data,
+    resolution = 0.1, algorithm = 1, cluster.name = "louvain"
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Louvain Clustering. Time Elapsed:", time_elapsed))
@@ -90,7 +99,10 @@ run_seurat <- function(sce, time) {
   # leiden ####
   start_time <- Sys.time()
   # data <- FindNeighbors(data, dims = 1:50, verbose = T)
-  data <- FindClusters(data, algorithm = 1, resolution = 0.08, cluster.name = "leiden") # 4 leiden
+  data <- FindClusters(
+    data,
+    algorithm = 1, resolution = 0.08, cluster.name = "leiden"
+  ) # 4 leiden
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Leiden Clustering. Time Elapsed:", time_elapsed))
