@@ -78,7 +78,7 @@ write_json(
 )
 write.table(
   data.frame(cell_id = output_data$cell_ids, louvain = output_data$louvain, leiden = output_data$leiden),
-  leiden_path,
+  clusters_path,
   sep = "\t", quote = F, row.names = F
 )
 #write.table(
