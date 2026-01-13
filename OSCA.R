@@ -98,6 +98,7 @@ run_osca <- function(sce, time) {
 
   return(list(
     pca = reducedDim(sce, "PCA"),
+    hvgs = hvg.sce.var,
     cell_ids = colnames(sce),
     time = time,
     leiden = leiden_clustering,

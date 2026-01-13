@@ -95,6 +95,7 @@ run_scrapper <- function(sce, time) {
 
   return(list(
     pca = reducedDim(filtered, "PCA"),
+    hvgs = hvg.sce.var,
     cell_ids = colnames(filtered),
     time = time,
     leiden = leiden_clustering,

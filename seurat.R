@@ -34,7 +34,7 @@ run_seurat <- function(sce, time) {
   # Identification of highly variable features (feature selection) ####
   start_time <- Sys.time()
   data <- FindVariableFeatures(data, selection.method = "vst", nfeatures = 1000)
-  top10 <- head(VariableFeatures(data), 10)
+  #top10 <- head(VariableFeatures(data), 10)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Identification of highly variable features. Time Elapsed:", time_elapsed))
@@ -97,6 +97,7 @@ run_seurat <- function(sce, time) {
 
   return(list(
     pca = Embeddings(data, reduction = "pca"),
+    hvgs = VariableFeatures(data),
     time = time,
     cell_ids = colnames(data),
     leiden = data$leiden,

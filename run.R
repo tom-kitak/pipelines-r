@@ -42,6 +42,7 @@ clusters_path <- file.path(args$output_dir, paste0(args$name, ".clusters.tsv"))
 #leiden_path <- file.path(args$output_dir, paste0(args$name, ".leiden.tsv"))
 #louvain_path <- file.path(args$output_dir, paste0(args$name, ".louvain.tsv"))
 pca_path <- file.path(args$output_dir, paste0(args$name, ".pca.tsv"))
+hvgs_path <- file.path(args$output_dir, paste0(args$name, ".hvgs.tsv"))
 
 sce <- readH5AD(args$data_path, reader = "python")
 
@@ -99,3 +100,4 @@ write.table(
   output_data$pca, pca_path,
   sep = "\t", quote = F, row.names = F
 )
+writeLines(output_data$hvgs, file(hvgs_path))
