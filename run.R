@@ -100,5 +100,6 @@ write.table(
   output_data$pca, pca_path,
   sep = "\t", quote = F, row.names = F
 )
+cat(str(output_data))
 cat(str(output_data$hvgs))
 writeLines(output_data$hvgs, file(hvgs_path))
