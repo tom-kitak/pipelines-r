@@ -14,11 +14,12 @@ run_seurat <- function(sce, time) {
   time$find_mit_gene <- time_elapsed
 
   # filter data ####
+  cat(dim(data))
   start_time <- Sys.time()
   VlnPlot(data, features = c("nFeature_originalexp", "nCount_originalexp", "percent.mt"), ncol = 3)
-  data <- subset(data, subset = nFeature_originalexp > 200 & nFeature_originalexp < 6200 & percent.mt < 5 &
-    nCount_originalexp < 60000)
+  data <- subset(data, subset = nFeature_originalexp > 200 & nFeature_originalexp < 6200 & percent.mt < 5 & nCount_originalexp < 60000)
   end_time <- Sys.time()
+  cat(dim(data))
   time_elapsed <- end_time - start_time
   print(paste("Filter data. Time Elapsed:", time_elapsed))
   time$filter <- time_elapsed
