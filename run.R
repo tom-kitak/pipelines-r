@@ -38,8 +38,9 @@ m <- grep("--file=", cargs)
 run_dir <- dirname(gsub("--file=", "", cargs[[m]]))
 
 timings_path <- file.path(args$output_dir, paste0(args$name, ".timings.json"))
-leiden_path <- file.path(args$output_dir, paste0(args$name, ".leiden.tsv"))
-louvain_path <- file.path(args$output_dir, paste0(args$name, ".louvain.tsv"))
+clusters_path <- file.path(args$output_dir, paste0(args$name, ".clusters.tsv"))
+#leiden_path <- file.path(args$output_dir, paste0(args$name, ".leiden.tsv"))
+#louvain_path <- file.path(args$output_dir, paste0(args$name, ".louvain.tsv"))
 pca_path <- file.path(args$output_dir, paste0(args$name, ".pca.tsv"))
 
 sce <- readH5AD(args$data_path, reader = "python")
@@ -76,17 +77,22 @@ write_json(
   auto_unbox = TRUE, pretty = TRUE
 )
 write.table(
-  data.frame(cell_ids = output_data$cell_ids, leiden = output_data$leiden),
+  data.frame(cell_id = output_data$cell_ids, louvain = output_data$louvain, leiden = output_data$leiden),
   leiden_path,
   sep = "\t", quote = F, row.names = F
 )
-write.table(
-  data.frame(cell_ids = output_data$cell_ids, louvain = output_data$louvain),
-  louvain_path,
-  sep = "\t", quote = F, row.names = F
-)
+#write.table(
+#  data.frame(cell_id = output_data$cell_ids, leiden = output_data$leiden),
+#  leiden_path,
+#  sep = "\t", quote = F, row.names = F
+#)
+#write.table(
+#  data.frame(cell_id = output_data$cell_ids, louvain = output_data$louvain),
+#  louvain_path,
+#  sep = "\t", quote = F, row.names = F
+#)
 output_data$pca <- data.frame(
-  cell_ids = rownames(output_data$pca),
+  cell_id = rownames(output_data$pca),
   output_data$pca
 )
 write.table(
