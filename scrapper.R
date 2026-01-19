@@ -60,8 +60,6 @@ run_scrapper <- function(sce, time) {
   print(paste("PCA. Time Elapsed:", time_elapsed))
   time$pca <- time_elapsed
   reducedDim(filtered, "PCA") <- t(pca$components)
-  dim(reducedDim(filtered, "PCA")[, 1:2])
-  pca_var_pct_scrap <- pca$variance.explained
 
   # t-sne ####
   start_time <- Sys.time()
