@@ -48,8 +48,6 @@ run_seurat <- function(sce, time) {
   print(paste("Identification of highly variable features. Time Elapsed:", time_elapsed))
   time$hvg <- time_elapsed
 
-  hvg <- VariableFeatures(data)
-
   # Scaling the data ####
   start_time <- Sys.time()
   all.genes <- rownames(data)
