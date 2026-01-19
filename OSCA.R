@@ -46,8 +46,6 @@ run_osca <- function(sce, time) {
   time$hvg <- time_elapsed
 
   # PCA ####
-  counts(sce) <- as.matrix(counts(sce))
-  logcounts(sce) <- as.matrix(logcounts(sce))
   start_time <- Sys.time()
   sce <- runPCA(sce, subset_row = hvg.sce.var)
   end_time <- Sys.time()
