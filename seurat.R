@@ -105,8 +105,8 @@ run_seurat <- function(sce, time) {
   # data <- FindNeighbors(data, dims = 1:50, verbose = T)
   data <- FindClusters(
     data,
-    algorithm = 1, resolution = 0.08, cluster.name = "leiden"
-  ) # 4 leiden
+    algorithm = 4, resolution = 0.08, cluster.name = "leiden"
+  )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Leiden Clustering. Time Elapsed:", time_elapsed))
