@@ -1,4 +1,5 @@
 library(Seurat)
+library(SingleCellExperiment)
 
 run_seurat <- function(sce, time) {
   # data ####
