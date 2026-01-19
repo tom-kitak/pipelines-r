@@ -16,10 +16,14 @@ run_seurat <- function(sce, time) {
   # filter data ####
   write(paste0("before: ", dim(data)), stderr())
   start_time <- Sys.time()
+  qc <- metadata(sce)$qc_thresholds
   VlnPlot(data, features = c("nFeature_originalexp", "nCount_originalexp", "percent.mt"), ncol = 3)
   data <- subset(
     data,
-    subset = nFeature_originalexp > 200 & nFeature_originalexp < 6200 & percent.mt < 5 & nCount_originalexp < 60000
+    subset = nFeature_originalexp > qc$nFeature["min"] &
+      nFeature_originalexp < qc$nFeature["max"] &
+      percent.mt < qc$percent.mt["max"] &
+      nCount_originalexp < qc$nCount["max"]
   )
   end_time <- Sys.time()
   write(paste0("after: ", dim(data)), stderr())
