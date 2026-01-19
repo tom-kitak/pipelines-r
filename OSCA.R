@@ -39,7 +39,6 @@ run_osca <- function(sce, time) {
   # Identification of highly variable features (feature selection) ####
   start_time <- Sys.time()
   dec.sce <- modelGeneVar(sce)
-  fit.sce <- metadata(dec.sce)
   hvg.sce.var <- getTopHVGs(dec.sce, n = 1000)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
