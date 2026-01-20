@@ -80,12 +80,14 @@ run_scrapper <- function(sce, time) {
   time$umap <- time_elapsed
   reducedDim(filtered, "UMAP") <- umap.out
 
+  rslns <- metadata(sce)$resolutions
   # louvain  ####
   start_time <- Sys.time()
   snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
   clust.out <- clusterGraph(
     snn.graph,
-    method = c("multilevel"), multilevel.resolution = 0.18
+    method = c("multilevel"),
+    multilevel.resolution = rslns[rslns$method == "louvain", "resolution"]
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -98,7 +100,8 @@ run_scrapper <- function(sce, time) {
   snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
   clust.out <- clusterGraph(
     snn.graph,
-    method = c("leiden"), leiden.resolution = 0.16
+    method = c("leiden"),
+    leiden.resolution = rslns[rslns$method == "leiden", "resolution"]
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
