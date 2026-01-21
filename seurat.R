@@ -1,7 +1,7 @@
 library(Seurat)
 library(SingleCellExperiment)
 
-run_seurat <- function(sce, time) {
+run_seurat <- function(sce, resolution, time) {
   # data ####
   data <- as.Seurat(sce, counts = "counts", data = NULL, assay = NULL)
   DefaultAssay(data) <- "originalexp"
@@ -85,14 +85,13 @@ run_seurat <- function(sce, time) {
   print(paste("UMAP. Time Elapsed:", time_elapsed))
   time$umap <- time_elapsed
 
-  rslns <- metadata(sce)$resolutions
   # louvain ####
   start_time <- Sys.time()
   data <- FindNeighbors(data, dims = 1:50, verbose = T)
   data <- FindClusters(
     data,
     algorithm = 1, cluster.name = "louvain",
-    resolution = rslns[rslns$method == "louvain", "resolution"]
+    resolution = resolution
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -105,7 +104,7 @@ run_seurat <- function(sce, time) {
   data <- FindClusters(
     data,
     algorithm = 4, cluster.name = "leiden",
-    resolution = rslns[rslns$method == "leiden", "resolution"],
+    resolution = resolution
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time

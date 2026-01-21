@@ -2,7 +2,7 @@ library(SingleCellExperiment)
 library(DelayedArray)
 library(scrapper)
 
-run_scrapper <- function(sce, time) {
+run_scrapper <- function(sce, resolution, time) {
   nthreads <- 1
   assay(sce) <- DelayedArray(assay(sce))
 
@@ -80,14 +80,13 @@ run_scrapper <- function(sce, time) {
   time$umap <- time_elapsed
   reducedDim(filtered, "UMAP") <- umap.out
 
-  rslns <- metadata(sce)$resolutions
   # louvain  ####
   start_time <- Sys.time()
   snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
   clust.out <- clusterGraph(
     snn.graph,
     method = c("multilevel"),
-    multilevel.resolution = rslns[rslns$method == "louvain", "resolution"]
+    multilevel.resolution = resolution
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -101,7 +100,7 @@ run_scrapper <- function(sce, time) {
   clust.out <- clusterGraph(
     snn.graph,
     method = c("leiden"),
-    leiden.resolution = rslns[rslns$method == "leiden", "resolution"]
+    leiden.resolution = resolution
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time

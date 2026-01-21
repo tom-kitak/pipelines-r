@@ -6,7 +6,7 @@ library(scater)
 library(bluster)
 library(EnsDb.Hsapiens.v75)
 
-run_osca <- function(sce, time) {
+run_osca <- function(sce, resolution, time) {
   #### 1. find mithocondial genes  ####
   start_time <- Sys.time()
   chr.loc <- mapIds(EnsDb.Hsapiens.v75,
