@@ -40,7 +40,7 @@ run_scrapper <- function(sce, resolution, filter = c("manual", "auto"), time) {
 
   # normalization ####
   start_time <- Sys.time()
-  size.factors <- centerSizeFactors(rna.qc.metrics$sum[rna.qc.filter])
+  size.factors <- centerSizeFactors(rna.qc.metrics$sum[keep])
   normalized <- normalizeCounts(assay(filtered), size.factors)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
