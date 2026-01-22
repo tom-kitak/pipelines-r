@@ -6,7 +6,8 @@ library(scater)
 library(bluster)
 library(EnsDb.Hsapiens.v75)
 
-run_osca <- function(sce, resolution, time) {
+run_osca <- function(sce, resolution, filter = c("manual", "auto"), time) {
+  filter <- match.arg(filter)
   #### 1. find mithocondial genes  ####
   start_time <- Sys.time()
   chr.loc <- mapIds(EnsDb.Hsapiens.v75,
@@ -17,16 +18,28 @@ run_osca <- function(sce, resolution, time) {
   df <- perCellQCMetrics(sce, subsets = list(Mito = is.mito))
   # include them in the object
   colData(sce) <- cbind(colData(sce), df)
-  reasons <- perCellQCFilters(df, sub.fields = "subsets_Mito_percent")
-  sce$discard <- reasons$discard
-  sce <- sce[, !sce$discard]
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Find mithocondial genes. Time Elapsed:", time_elapsed))
   time$find_mit_gene <- time_elapsed
 
   # 2. filter data ####
-  # nothing to do here
+  start_time <- Sys.time()
+  if (filter == "manual") {
+    qc <- metadata(sce)$qc_thresholds
+    keep <- df$detected > qc[qc$metric == "nFeature", "min"] &
+      df$detected < qc[qc$metric == "nFeature", "max"] &
+      df$subsets_Mito_percent < qc[qc$metric == "percent.mt", "max"] &
+      df$sum < qc[qc$metric == "nCount", "max"]
+  } else {
+    reasons <- perCellQCFilters(df, sub.fields = "subsets_Mito_percent")
+    keep <- !reasons$discard
+  }
+  sce <- sce[, keep]
+  end_time <- Sys.time()
+  time_elapsed <- end_time - start_time
+  print(paste("Filter data. Time Elapsed:", time_elapsed))
+  time$filter <- time_elapsed
 
   # normalization ####
   start_time <- Sys.time()

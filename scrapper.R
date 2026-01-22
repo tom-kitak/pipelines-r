@@ -2,7 +2,8 @@ library(SingleCellExperiment)
 library(DelayedArray)
 library(scrapper)
 
-run_scrapper <- function(sce, resolution, time) {
+run_scrapper <- function(sce, resolution, filter = c("manual", "auto"), time) {
+  filter <- match.arg(filter)
   nthreads <- 1
   assay(sce) <- DelayedArray(assay(sce))
 
@@ -13,16 +14,29 @@ run_scrapper <- function(sce, resolution, time) {
     subsets = list(mt = is.mito),
     num.threads = nthreads
   )
-  rna.qc.thresholds <- suggestRnaQcThresholds(rna.qc.metrics)
-  rna.qc.filter <- filterRnaQcMetrics(rna.qc.thresholds, rna.qc.metrics)
-  filtered <- sce[, rna.qc.filter, drop = FALSE]
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Find mithocondrial genes. Time Elapsed:", time_elapsed))
   time$find_mit_gene <- time_elapsed
 
   # filter data ####
-  # nothing to do here
+  start_time <- Sys.time()
+  if (filter == "manual") {
+    qc <- metadata(sce)$qc_thresholds
+    mt_percent <- rna.qc.metrics$subsets$mt * 100
+    keep <- rna.qc.metrics$detected > qc[qc$metric == "nFeature", "min"] &
+      rna.qc.metrics$detected < qc[qc$metric == "nFeature", "max"] &
+      mt_percent < qc[qc$metric == "percent.mt", "max"] &
+      rna.qc.metrics$sum < qc[qc$metric == "nCount", "max"]
+  } else {
+    rna.qc.thresholds <- suggestRnaQcThresholds(rna.qc.metrics)
+    keep <- filterRnaQcMetrics(rna.qc.thresholds, rna.qc.metrics)
+  }
+  filtered <- sce[, keep, drop = FALSE]
+  end_time <- Sys.time()
+  time_elapsed <- end_time - start_time
+  print(paste("Filter data. Time Elapsed:", time_elapsed))
+  time$filter <- time_elapsed
 
   # normalization ####
   start_time <- Sys.time()

@@ -1,7 +1,8 @@
 library(Seurat)
 library(SingleCellExperiment)
 
-run_seurat <- function(sce, resolution, time) {
+run_seurat <- function(sce, resolution, filter = c("manual", "auto"), time) {
+  filter <- match.arg(filter)
   # data ####
   data <- as.Seurat(sce, counts = "counts", data = NULL, assay = NULL)
   DefaultAssay(data) <- "originalexp"
@@ -17,14 +18,26 @@ run_seurat <- function(sce, resolution, time) {
   # filter data ####
   write(paste0("before: ", dim(data)), stderr())
   start_time <- Sys.time()
-  qc <- metadata(sce)$qc_thresholds
-  data <- subset(
-    data,
-    subset = nFeature_originalexp > qc[qc$metric == "nFeature", "min"] &
-      nFeature_originalexp < qc[qc$metric == "nFeature", "max"] &
-      percent.mt < qc[qc$metric == "percent.mt", "max"] &
-      nCount_originalexp < qc[qc$metric == "nCount", "max"]
-  )
+  if (filter == "manual") {
+    qc <- metadata(sce)$qc_thresholds
+    data <- subset(
+      data,
+      subset = nFeature_originalexp > qc[qc$metric == "nFeature", "min"] &
+        nFeature_originalexp < qc[qc$metric == "nFeature", "max"] &
+        percent.mt < qc[qc$metric == "percent.mt", "max"] &
+        nCount_originalexp < qc[qc$metric == "nCount", "max"]
+    )
+  } else {
+    # seurat auto pipeline uses scuttle for filtering
+    is.mito <- grepl("^MT-", rownames(sce))
+    df <- scuttle::perCellQCMetrics(sce, subsets = list(Mito = is.mito))
+    reasons <- scuttle::perCellQCFilters(
+      df,
+      sub.fields = "subsets_Mito_percent"
+    )
+    keep_cells <- colnames(sce)[!reasons$discard]
+    data <- subset(data, cells = keep_cells)
+  }
   end_time <- Sys.time()
   write(paste0("after: ", dim(data)), stderr())
   time_elapsed <- end_time - start_time

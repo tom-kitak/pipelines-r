@@ -36,6 +36,13 @@ parser$add_argument(
   help = "clustering resolution",
   required = TRUE
 )
+parser$add_argument(
+  "--filter",
+  dest = "filter", type = "character",
+  help = "filtering (manual uses suggested cutoffs, auto uses package QC)",
+  choices = c("manual", "auto"),
+  default = "manual", required = FALSE
+)
 
 args <- parser$parse_args()
 
@@ -62,15 +69,15 @@ time <- list(
 if (args$method_name == "seurat") {
   seurat_r_path <- file.path(run_dir, "seurat.R")
   source(seurat_r_path)
-  output_data <- run_seurat(sce, args$resolution, time)
+  output_data <- run_seurat(sce, args$resolution, args$filter, time)
 } else if (args$method_name == "osca") {
   osca_r_path <- file.path(run_dir, "OSCA.R")
   source(osca_r_path)
-  output_data <- run_osca(sce, args$resolution, time)
+  output_data <- run_osca(sce, args$resolution, args$filter, time)
 } else if (args$method_name == "scrapper") {
   scrapper_r_path <- file.path(run_dir, "scrapper.R")
   source(scrapper_r_path)
-  output_data <- run_scrapper(sce, args$resolution, time)
+  output_data <- run_scrapper(sce, args$resolution, args$filter, time)
 }
 
 # write outputs to files
