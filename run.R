@@ -100,6 +100,10 @@ output_data$pca <- data.frame(
   cell_id = rownames(output_data$pca),
   output_data$pca
 )
+colnames(output_data$pca) <- c(
+  "cell_id",
+  paste0("PC", seq_len(ncol(output_data$pca) - 1))
+)
 write.table(
   output_data$pca, pca_path,
   sep = "\t", quote = F, row.names = F
