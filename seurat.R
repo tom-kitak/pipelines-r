@@ -2,7 +2,8 @@ library(Seurat)
 library(SingleCellExperiment)
 
 run_seurat <- function(
-  sce, resolution, n_comp = 50, n_neig = 15, filter = c("manual", "auto"), time
+  sce, resolution, n_comp = 50, n_neig = 15, n_hvg = 1000,
+  filter = c("manual", "auto"), time
 ) {
   filter <- match.arg(filter)
   # data ####
@@ -56,7 +57,7 @@ run_seurat <- function(
 
   # Identification of highly variable features (feature selection) ####
   start_time <- Sys.time()
-  data <- FindVariableFeatures(data, selection.method = "vst", nfeatures = 1000)
+  data <- FindVariableFeatures(data, selection.method = "vst", nfeatures = n_hvg)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Identification of highly variable features. Time Elapsed:", time_elapsed))

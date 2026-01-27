@@ -7,7 +7,8 @@ library(bluster)
 library(EnsDb.Hsapiens.v75)
 
 run_osca <- function(
-  sce, resolution, n_comp = 50, n_neig = 15, filter = c("manual", "auto"), time
+  sce, resolution, n_comp = 50, n_neig = 15, n_hvg = 1000,
+  filter = c("manual", "auto"), time
 ) {
   filter <- match.arg(filter)
   #### 1. find mithocondial genes  ####
@@ -54,7 +55,7 @@ run_osca <- function(
   # Identification of highly variable features (feature selection) ####
   start_time <- Sys.time()
   dec.sce <- modelGeneVar(sce)
-  hvg.sce.var <- getTopHVGs(dec.sce, n = 1000)
+  hvg.sce.var <- getTopHVGs(dec.sce, n = n_hvg)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Identification of highly variable features. Time Elapsed:", time_elapsed))
