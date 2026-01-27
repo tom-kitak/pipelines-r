@@ -64,8 +64,7 @@ run_seurat <- function(
 
   # Scaling the data ####
   start_time <- Sys.time()
-  all.genes <- rownames(data)
-  data <- ScaleData(data, features = all.genes)
+  data <- ScaleData(data)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("Scaling the data. Time Elapsed:", time_elapsed))
