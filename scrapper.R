@@ -2,7 +2,9 @@ library(SingleCellExperiment)
 library(DelayedArray)
 library(scrapper)
 
-run_scrapper <- function(sce, resolution, filter = c("manual", "auto"), time) {
+run_scrapper <- function(
+  sce, resolution, n_comp = 50, n_neig = 15, filter = c("manual", "auto"), time
+) {
   filter <- match.arg(filter)
   nthreads <- 1
   assay(sce) <- DelayedArray(assay(sce))
@@ -67,7 +69,7 @@ run_scrapper <- function(sce, resolution, filter = c("manual", "auto"), time) {
   start_time <- Sys.time()
   pca <- runPca(
     (assay(filtered, "normalized")[hvg.sce.var, ]),
-    num.threads = nthreads, number = 50
+    num.threads = nthreads, number = n_comp
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -96,7 +98,10 @@ run_scrapper <- function(sce, resolution, filter = c("manual", "auto"), time) {
 
   # louvain  ####
   start_time <- Sys.time()
-  snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
+  snn.graph <- buildSnnGraph(
+    pca$components,
+    num.neighbors = n_neig, num.threads = nthreads
+  )
   clust.out <- clusterGraph(
     snn.graph,
     method = c("multilevel"),
@@ -110,7 +115,10 @@ run_scrapper <- function(sce, resolution, filter = c("manual", "auto"), time) {
 
   # leiden ####
   start_time <- Sys.time()
-  snn.graph <- buildSnnGraph(pca$components, num.threads = nthreads)
+  snn.graph <- buildSnnGraph(
+    pca$components,
+    num.neighbors = n_neig, num.threads = nthreads
+  )
   clust.out <- clusterGraph(
     snn.graph,
     method = c("leiden"),

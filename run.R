@@ -37,6 +37,18 @@ parser$add_argument(
   required = TRUE
 )
 parser$add_argument(
+  "--n_comp",
+  dest = "n_comp", type = "integer",
+  help = "number of PCA components to use for KNN graph construction",
+  default = 50, required = FALSE
+)
+parser$add_argument(
+  "--n_neig",
+  dest = "n_neig", type = "integer",
+  help = "number of neighbors to use for KNN graph construction",
+  default = 15, required = FALSE
+)
+parser$add_argument(
   "--filter",
   dest = "filter", type = "character",
   help = "filtering (manual uses suggested cutoffs, auto uses package QC)",
@@ -69,15 +81,21 @@ time <- list(
 if (args$method_name == "seurat") {
   seurat_r_path <- file.path(run_dir, "seurat.R")
   source(seurat_r_path)
-  output_data <- run_seurat(sce, args$resolution, args$filter, time)
+  output_data <- run_seurat(
+    sce, args$resolution, args$n_comp, args$n_neig, args$filter, time
+  )
 } else if (args$method_name == "osca") {
   osca_r_path <- file.path(run_dir, "OSCA.R")
   source(osca_r_path)
-  output_data <- run_osca(sce, args$resolution, args$filter, time)
+  output_data <- run_osca(
+    sce, args$resolution, args$n_comp, args$n_neig, args$filter, time
+  )
 } else if (args$method_name == "scrapper") {
   scrapper_r_path <- file.path(run_dir, "scrapper.R")
   source(scrapper_r_path)
-  output_data <- run_scrapper(sce, args$resolution, args$filter, time)
+  output_data <- run_scrapper(
+    sce, args$resolution, args$n_comp, args$n_neig, args$filter, time
+  )
 }
 
 # write outputs to files

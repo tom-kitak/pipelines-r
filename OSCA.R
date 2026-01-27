@@ -6,7 +6,9 @@ library(scater)
 library(bluster)
 library(EnsDb.Hsapiens.v75)
 
-run_osca <- function(sce, resolution, filter = c("manual", "auto"), time) {
+run_osca <- function(
+  sce, resolution, n_comp = 50, n_neig = 15, filter = c("manual", "auto"), time
+) {
   filter <- match.arg(filter)
   #### 1. find mithocondial genes  ####
   start_time <- Sys.time()
@@ -60,7 +62,7 @@ run_osca <- function(sce, resolution, filter = c("manual", "auto"), time) {
 
   # PCA ####
   start_time <- Sys.time()
-  sce <- runPCA(sce, subset_row = hvg.sce.var)
+  sce <- runPCA(sce, subset_row = hvg.sce.var, ncomponents = n_comp)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("PCA.Time Elapsed:", time_elapsed))
@@ -88,7 +90,7 @@ run_osca <- function(sce, resolution, filter = c("manual", "auto"), time) {
   start_time <- Sys.time()
   louvain_clustering <- clusterCells(sce,
     use.dimred = "PCA",
-    BLUSPARAM = NNGraphParam(k = 50, cluster.fun = "louvain")
+    BLUSPARAM = NNGraphParam(k = n_neig, cluster.fun = "louvain")
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -99,7 +101,7 @@ run_osca <- function(sce, resolution, filter = c("manual", "auto"), time) {
   start_time <- Sys.time()
   leiden_clustering <- clusterCells(sce,
     use.dimred = "PCA",
-    BLUSPARAM = NNGraphParam(k = 50, cluster.fun = "leiden")
+    BLUSPARAM = NNGraphParam(k = n_neig, cluster.fun = "leiden")
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time

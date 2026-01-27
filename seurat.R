@@ -1,7 +1,9 @@
 library(Seurat)
 library(SingleCellExperiment)
 
-run_seurat <- function(sce, resolution, filter = c("manual", "auto"), time) {
+run_seurat <- function(
+  sce, resolution, n_comp = 50, n_neig = 15, filter = c("manual", "auto"), time
+) {
   filter <- match.arg(filter)
   # data ####
   data <- as.Seurat(sce, counts = "counts", data = NULL, assay = NULL)
@@ -73,7 +75,7 @@ run_seurat <- function(sce, resolution, filter = c("manual", "auto"), time) {
   start_time <- Sys.time()
   data <- RunPCA(
     data,
-    features = VariableFeatures(object = data), verbose = FALSE
+    features = VariableFeatures(object = data), npcs = n_comp, verbose = FALSE
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -92,7 +94,7 @@ run_seurat <- function(sce, resolution, filter = c("manual", "auto"), time) {
 
   # UMAP ####
   start_time <- Sys.time()
-  data <- RunUMAP(data, dims = 1:50)
+  data <- RunUMAP(data, dims = 1:n_comp)
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
   print(paste("UMAP. Time Elapsed:", time_elapsed))
@@ -100,7 +102,10 @@ run_seurat <- function(sce, resolution, filter = c("manual", "auto"), time) {
 
   # louvain ####
   start_time <- Sys.time()
-  data <- FindNeighbors(data, dims = 1:50, verbose = T)
+  data <- FindNeighbors(
+    data,
+    dims = 1:n_comp, k.param = n_neig, verbose = T
+  )
   data <- FindClusters(
     data,
     algorithm = 1, cluster.name = "louvain",
