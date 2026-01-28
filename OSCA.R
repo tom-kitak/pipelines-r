@@ -91,7 +91,10 @@ run_osca <- function(
   start_time <- Sys.time()
   louvain_clustering <- clusterCells(sce,
     use.dimred = "PCA",
-    BLUSPARAM = NNGraphParam(k = n_neig, cluster.fun = "louvain")
+    BLUSPARAM = NNGraphParam(
+      k = n_neig,
+      cluster.fun = "louvain", cluster.args = list(resolution = resolution)
+    )
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
@@ -102,7 +105,10 @@ run_osca <- function(
   start_time <- Sys.time()
   leiden_clustering <- clusterCells(sce,
     use.dimred = "PCA",
-    BLUSPARAM = NNGraphParam(k = n_neig, cluster.fun = "leiden")
+    BLUSPARAM = NNGraphParam(
+      k = n_neig,
+      cluster.fun = "leiden", cluster.args = list(resolution = resolution)
+    )
   )
   end_time <- Sys.time()
   time_elapsed <- end_time - start_time
