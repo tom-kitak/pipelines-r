@@ -15,6 +15,9 @@ binary_search <- function(
     tolerance = 1e-3,
     ...) {
 
+  resolution_update <- as.numeric(resolution_update)
+  resolution_init <- as.numeric(resolution_init)
+
   # Initialize boundaries
   lb <- rb <- NULL
   n_clust <- -1
@@ -48,6 +51,8 @@ binary_search <- function(
   }
 
   i <- 0
+  lb <- as.numeric(lb)
+  rb <- as.numeric(rb)
   while ((rb - lb > tolerance || lb == rb) && i < num_rs) {
     mid <- sqrt(lb * rb)
     message("Resolution: ", mid)
@@ -62,9 +67,14 @@ binary_search <- function(
     i <- i + 1
   }
 
+  lb <- if (is.numeric(lb)) lb else NA_real_
+  rb <- if (is.numeric(rb)) rb else NA_real_
+  mid <- if (i > 0) mid else res
+  final_res <- mid
+
   # Warning if target not met
   if (n_clust != n_clust_target) {
     warning(sprintf("Warning: n_clust = %d not found in binary search, return best approximation with res = %f and n_clust = %d. (rb = %f, lb = %f, i = %d)", n_clust_target, mid, n_clust, rb, lb, i))
   }
-  return(result)
+  return(list(result = result, resolution = final_res))
 }
