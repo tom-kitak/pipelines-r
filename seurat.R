@@ -109,7 +109,7 @@ run_seurat <- function(
   louvain_search <- binary_search(
     data,
     do_clustering = function(spe, resolution) {
-      FindClusters(spe, algorithm = 1, cluster.name = "louvain", resolution = as.numeric(resolution))
+      FindClusters(spe, algorithm = 1, cluster.name = "louvain", resolution = resolution)
     },
     extract_nclust = function(result) length(unique(result$louvain)),
     n_clust_target = n_cluster
@@ -127,7 +127,7 @@ run_seurat <- function(
   leiden_search <- binary_search(
     data,
     do_clustering = function(spe, resolution) {
-      FindClusters(spe, algorithm = 4, cluster.name = "leiden", resolution = as.numeric(resolution))
+      FindClusters(spe, algorithm = 4, cluster.name = "leiden", resolution = resolution)
     },
     extract_nclust = function(result) length(unique(result$leiden)),
     n_clust_target = n_cluster

@@ -96,7 +96,7 @@ run_osca <- function(
         use.dimred = "PCA",
         BLUSPARAM = NNGraphParam(
           k = n_neig,
-          cluster.fun = "louvain", cluster.args = list(resolution = as.numeric(resolution))
+          cluster.fun = "louvain", cluster.args = list(resolution = resolution)
         )
       )
     },
@@ -120,7 +120,7 @@ run_osca <- function(
         use.dimred = "PCA",
         BLUSPARAM = NNGraphParam(
           k = n_neig,
-          cluster.fun = "leiden", cluster.args = list(resolution = as.numeric(resolution))
+          cluster.fun = "leiden", cluster.args = list(resolution = resolution)
         )
       )
     },

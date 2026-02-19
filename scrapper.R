@@ -106,7 +106,7 @@ run_scrapper <- function(
   louvain_search <- binary_search(
     snn.graph.louvain,
     do_clustering = function(spe, resolution) {
-      clusterGraph(spe, method = c("multilevel"), multilevel.resolution = as.numeric(resolution))
+      clusterGraph(spe, method = c("multilevel"), multilevel.resolution = resolution)
     },
     extract_nclust = function(result) length(unique(result$membership)),
     n_clust_target = n_cluster
@@ -128,7 +128,7 @@ run_scrapper <- function(
   leiden_search <- binary_search(
     snn.graph.leiden,
     do_clustering = function(spe, resolution) {
-      clusterGraph(spe, method = c("leiden"), leiden.resolution = as.numeric(resolution))
+      clusterGraph(spe, method = c("leiden"), leiden.resolution = resolution)
     },
     extract_nclust = function(result) length(unique(result$membership)),
     n_clust_target = n_cluster
